@@ -1,0 +1,9 @@
+/* center with margin auto */
+.board-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
+}

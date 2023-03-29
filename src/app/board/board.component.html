@@ -1,0 +1,12 @@
+<div class="board-container">
+    <div *ngFor="let tiles of board.tiles" class="row" [style.margin-left]="xOffset(tiles[0])">
+        <div *ngFor="let tile of tiles" class="hexagon" style.width="{{hexagonSize}}px" style.height="{{hexagonSize * 0.8660254}}px">
+            <svg viewBox="0 0 100 86.60254">
+                <polygon (click)="clickTile(tile)" points="0,43.30127 25,86.60254 75,86.60254 100,43.30127 75,0 25,0" [attr.fill]="tile.hexColor()"/>
+                <image *ngIf="tile.piece != null" [attr.xlink:href]="'../../assets/images/pieces/' + tile.piece.imageFile" [attr.x]="pieceX(tile.piece)" [attr.y]="pieceY(tile.piece)" height="80%"/>
+                <circle [style.opacity]="tile.targetAction == 'move' ? 1 : 0" class="move-mark" cx="50" cy="43.30127" r="12"/>
+                <circle [style.opacity]="tile.targetAction == 'attack' ? 1 : 0"  class="attack-mark" cx="50" cy="43.30127" r="30"/>
+            </svg>
+        </div>
+    </div>
+</div>

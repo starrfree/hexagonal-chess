@@ -1,0 +1,33 @@
+/* .hexagon {
+    width: var(--hexagon-size);
+    height: calc(var(--hexagon-size) * 0.8660254);
+} */
+
+.hexagon polygon {
+    pointer-events: fill;
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    pointer-events: none;
+}
+
+.board-container {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    width: fit-content;
+}
+
+.move-mark {
+    fill: rgb(0, 0, 0, 0.2);
+}
+
+.attack-mark {
+    fill: transparent;
+    stroke: rgb(0, 0, 0, 0.2);
+    stroke-width: 10;
+}
