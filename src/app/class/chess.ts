@@ -84,6 +84,59 @@ export class Board {
         this.tiles[6][0].piece = new King(Player.Black, this.tiles[6][0])
     }
 
+    move(piece: Piece, to: Tile) {
+        let from = piece.tile
+        from.piece = null
+        to.piece = piece
+        piece.tile = to
+        if (piece instanceof Pawn) {
+            piece.hasMoved = true
+        }
+        this.clearHighlighted()
+        this.clearLastMove()
+        to.isLastMove = true
+        from.isLastMove = true
+        this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White
+    }   
+
+    kingIsInCheck(player: Player): boolean {
+        let otherPlayerMoves: Tile[] = []
+        let kingTile: Tile | null = null
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.tiles[i].length; j++) {
+                let tile = this.tiles[i][j]
+                if (tile.piece != null) {
+                    let moves = tile.piece.getPossibleMoves(this, false)
+                    if (tile.piece.player != player) {
+                        otherPlayerMoves = otherPlayerMoves.concat(moves)
+                    } else if (tile.piece instanceof King) {
+                        kingTile = tile
+                    }
+                }
+            }
+        }
+        if (kingTile == null) {
+            return false
+        }
+        return otherPlayerMoves.includes(kingTile)
+    }
+
+    movePutsInCheck(piece: Piece, to: Tile): boolean {
+        let newBoard: Board = this.deepCopy()
+        newBoard.move(newBoard.tiles[piece.tile.position.x][piece.tile.position.y].piece!, newBoard.tiles[to.position.x][to.position.y])
+        let kingIsInCheck = newBoard.kingIsInCheck(piece.player)
+        return kingIsInCheck
+    }
+
+    highlightMoves(tile: Tile) {
+        if (tile.piece != null) {
+            this.clearHighlighted()
+            tile.piece.getPossibleMoves(this).forEach(move => {
+                move.targetAction = move.isEmpty ? 'move' : 'attack'
+            })
+        }
+    }
+
     isInside(x: number, y: number): boolean {
         var maxY = this.size - Math.abs(x - (this.size - 1) / 2)
         return x >= 0 && x < this.size && y >= 0 && y < maxY
@@ -146,29 +199,46 @@ export class Board {
         let index = this.coordToIndex(position)
         return this.isInside(index[0], index[1])
     }
-
-    move(piece: Piece, to: Tile) {
-        let from = piece.tile
-        from.piece = null
-        to.piece = piece
-        piece.tile = to
-        if (piece instanceof Pawn) {
-            piece.hasMoved = true
+    
+    deepCopy(): Board {
+        let newBoard = new Board(this.size)
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.tiles[i].length; j++) {
+                let tile = this.tiles[i][j]
+                if (!tile.isEmpty) {
+                    let newPiece: Piece
+                    let newPlayer = tile.piece!.player
+                    switch(tile.piece!.constructor) {
+                        case Pawn:
+                            newPiece = new Pawn(newPlayer, newBoard.tiles[i][j])
+                            break
+                        case Rook:
+                            newPiece = new Rook(newPlayer, newBoard.tiles[i][j])
+                            break
+                        case Knight:
+                            newPiece = new Knight(newPlayer, newBoard.tiles[i][j])
+                            break
+                        case Bishop:
+                            newPiece = new Bishop(newPlayer, newBoard.tiles[i][j])
+                            break
+                        case Queen:
+                            newPiece = new Queen(newPlayer, newBoard.tiles[i][j])
+                            break
+                        case King:
+                            newPiece = new King(newPlayer, newBoard.tiles[i][j])
+                            break
+                        default:
+                            throw new Error('Unknown piece type')
+                    }
+                    newPiece.hasMoved = tile.piece!.hasMoved
+                    newBoard.tiles[i][j].piece = newPiece
+                } else {
+                    newBoard.tiles[i][j].piece = null
+                }
+            }
         }
-        this.clearHighlighted()
-        this.clearLastMove()
-        to.isLastMove = true
-        from.isLastMove = true
-        this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White
-    }
-
-    highlightMoves(tile: Tile) {
-        if (tile.piece != null) {
-            this.clearHighlighted()
-            tile.piece.getPossibleMoves(this).forEach(move => {
-                move.targetAction = move.isEmpty ? 'move' : 'attack'
-            })
-        }
+        newBoard.currentPlayer = this.currentPlayer
+        return newBoard
     }
 }
 
@@ -228,7 +298,7 @@ export class Piece {
         this.tile = tile
     }
 
-    getPossibleMoves(board: Board): Tile[] {
+    getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         return []
     }
 }
@@ -247,7 +317,7 @@ export class Pawn extends Piece {
         this.positionOffset = {x: 0, y: -3.5}
     }
 
-    override getPossibleMoves(board: Board): Tile[] {
+    override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
         let x = this.tile.position.x
@@ -279,7 +349,9 @@ export class Pawn extends Piece {
         }
         targetMoves.forEach(move => {
             move = board.coordToIndex(move)
-            if (board.isInside(move[0], move[1]) && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)) {
+            if (board.isInside(move[0], move[1]) 
+            && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)
+            && (!checkCheck || !board.movePutsInCheck(this, board.tiles[move[0]][move[1]]))) {
                 possibleMoves.push(board.tiles[move[0]][move[1]])
             }
         })
@@ -301,7 +373,7 @@ export class Rook extends Piece {
         super(player, PieceType.Rook, tile)
     }
 
-    override getPossibleMoves(board: Board): Tile[] {
+    override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
         let x = this.tile.position.x
@@ -330,7 +402,9 @@ export class Rook extends Piece {
 
         targetMoves.forEach(move => {
             move = board.coordToIndex(move)
-            if (board.isInside(move[0], move[1]) && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)) {
+            if (board.isInside(move[0], move[1]) 
+            && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)
+            && (!checkCheck || !board.movePutsInCheck(this, board.tiles[move[0]][move[1]]))) {
                 possibleMoves.push(board.tiles[move[0]][move[1]])
             }
         })
@@ -351,7 +425,7 @@ export class Knight extends Piece {
         super(player, PieceType.Knight, tile)
     }
 
-    override getPossibleMoves(board: Board): Tile[] {
+    override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
         let x = this.tile.position.x
@@ -374,7 +448,9 @@ export class Knight extends Piece {
         ]
         targetMoves.forEach(move => {
             move = board.coordToIndex(move)
-            if (board.isInside(move[0], move[1]) && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)) {
+            if (board.isInside(move[0], move[1]) 
+            && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)
+            && (!checkCheck || !board.movePutsInCheck(this, board.tiles[move[0]][move[1]]))) {
                 possibleMoves.push(board.tiles[move[0]][move[1]])
             }
         })
@@ -395,7 +471,7 @@ export class Bishop extends Piece {
         super(player, PieceType.Bishop, tile)
     }
 
-    override getPossibleMoves(board: Board): Tile[] {
+    override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
         let x = this.tile.position.x
@@ -430,7 +506,9 @@ export class Bishop extends Piece {
         }
         targetMoves.forEach(move => {
             move = board.coordToIndex(move)
-            if (board.isInside(move[0], move[1]) && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)) {
+            if (board.isInside(move[0], move[1]) 
+            && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)
+            && (!checkCheck || !board.movePutsInCheck(this, board.tiles[move[0]][move[1]]))) {
                 possibleMoves.push(board.tiles[move[0]][move[1]])
             }
         })
@@ -451,7 +529,7 @@ export class Queen extends Piece {
         super(player, PieceType.Queen, tile)
     }
 
-    override getPossibleMoves(board: Board): Tile[] {
+    override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
         let x = this.tile.position.x
@@ -480,7 +558,9 @@ export class Queen extends Piece {
 
         targetMoves.forEach(move => {
             move = board.coordToIndex(move)
-            if (board.isInside(move[0], move[1]) && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)) {
+            if (board.isInside(move[0], move[1]) 
+            && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)
+            && (!checkCheck || !board.movePutsInCheck(this, board.tiles[move[0]][move[1]]))) {
                 possibleMoves.push(board.tiles[move[0]][move[1]])
             }
         })
@@ -501,7 +581,7 @@ export class King extends Piece {
         super(player, PieceType.King, tile)
     }
 
-    override getPossibleMoves(board: Board): Tile[] {
+    override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
         let x = this.tile.position.x
@@ -518,7 +598,9 @@ export class King extends Piece {
         ]
         targetMoves.forEach(move => {
             move = board.coordToIndex(move)
-            if (board.isInside(move[0], move[1]) && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)) {
+            if (board.isInside(move[0], move[1]) 
+            && (board.tiles[move[0]][move[1]].isEmpty || board.tiles[move[0]][move[1]].piece!.player != this.player)
+            && (!checkCheck || !board.movePutsInCheck(this, board.tiles[move[0]][move[1]]))) {
                 possibleMoves.push(board.tiles[move[0]][move[1]])
             }
         })

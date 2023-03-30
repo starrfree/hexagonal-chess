@@ -22,12 +22,6 @@ export class BoardComponent implements OnInit {
   }
 
   xOffset(tile: Tile): string {
-    // var offset = -Math.floor(tile.position.x / 2) * this.hexagonSize / 2
-    // if (tile.position.x % 2 == 0) {
-    //   return `${offset}px`
-    // } else {
-    //   return `${offset - this.hexagonSize / 4}px`
-    // }
     if (tile.position.x > 0) {
       return `${-this.hexagonSize / 4}px`
     }
@@ -35,7 +29,6 @@ export class BoardComponent implements OnInit {
   }
 
   clickTile(tile: Tile) {
-    // console.log(`this.tiles[${tile.position.x}][${tile.position.y}].piece = new`)
     if (this.activeTile == null) {
       if (tile.piece != null) {
         this.activeTile = tile
