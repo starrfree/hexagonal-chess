@@ -3,7 +3,6 @@
 export class Board {
     size: number
     tiles: Tile[][]
-    lastMove: [Tile, Tile] | null = null
     currentPlayer: Player = Player.White
 
     constructor(size: number = 11) {
@@ -97,7 +96,53 @@ export class Board {
         to.isLastMove = true
         from.isLastMove = true
         this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White
-    }   
+    }
+
+    gameStatus(): GameStatus {
+        let whiteMoves: Tile[] = []
+        let whiteKing: King | null = null
+        let blackMoves: Tile[] = []
+        let blackKing: King | null = null
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.tiles[i].length; j++) {
+                let tile = this.tiles[i][j]
+                if (tile.piece != null) {
+                    if (tile.piece instanceof King) {
+                        if (tile.piece.player == Player.White) {
+                            whiteKing = tile.piece
+                        } else {
+                            blackKing = tile.piece
+                        }
+                    }
+                    let moves = tile.piece.getPossibleMoves(this, true)
+                    if (tile.piece.player == Player.White) {
+                        whiteMoves = whiteMoves.concat(moves)
+                    } else {
+                        blackMoves = blackMoves.concat(moves)
+                    }
+                }
+            }
+        }
+        if (whiteKing == null || blackKing == null) {
+            console.log("No king found")
+            return GameStatus.InProgress
+        }
+        if (whiteMoves.length == 0) {
+            if (blackMoves.includes(whiteKing.tile)) {
+                return GameStatus.BlackWon
+            } else {
+                return GameStatus.Draw
+            }
+        }
+        if (blackMoves.length == 0) {
+            if (whiteMoves.includes(blackKing.tile)) {
+                return GameStatus.WhiteWon
+            } else {
+                return GameStatus.Draw
+            }
+        }
+        return GameStatus.InProgress
+    }
 
     kingIsInCheck(player: Player): boolean {
         let otherPlayerMoves: Tile[] = []
@@ -116,6 +161,7 @@ export class Board {
             }
         }
         if (kingTile == null) {
+            console.log("No king found")
             return false
         }
         return otherPlayerMoves.includes(kingTile)
@@ -626,4 +672,11 @@ export enum PieceType {
     Bishop,
     Queen,
     King
+}
+
+export enum GameStatus {
+    InProgress,
+    WhiteWon,
+    BlackWon,
+    Draw
 }

@@ -1,3 +1,19 @@
 <div class="board-container">
-    <app-board></app-board>
+    <app-board #board></app-board>
+    <div class="menu-container">
+        <div class="menu-button" (click)="toggleMenu()">
+            <img src="../assets/images/svg/list.bullet.svg" alt="menu">
+        </div>
+        <div class="items-container" *ngIf="showMenu">
+            <div class="menu-item show smaller-img">
+                <img src="../assets/images/svg/book.closed.svg" alt="restart">
+            </div>
+            <div class="menu-item show">
+                <img src="../assets/images/svg/arrow.triangle.2.circlepath.svg" alt="restart">
+            </div>
+            <div class="menu-item show smaller-img">
+                <img src="../assets/images/svg/arrow.uturn.left.svg" alt="restart">
+            </div>
+        </div>
+    </div>
 </div>
