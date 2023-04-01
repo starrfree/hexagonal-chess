@@ -24,65 +24,67 @@ export class Board {
                 this.tiles[i].push(tile)
             }
         }
-        // White
-        // Pawn
-        this.tiles[1][6].piece = new Pawn(Player.White, this.tiles[1][6])
-        this.tiles[2][6].piece = new Pawn(Player.White, this.tiles[2][6])
-        this.tiles[3][6].piece = new Pawn(Player.White, this.tiles[3][6])
-        this.tiles[4][7].piece = new Pawn(Player.White, this.tiles[4][7])
-        this.tiles[5][7].piece = new Pawn(Player.White, this.tiles[5][7])
-        this.tiles[6][7].piece = new Pawn(Player.White, this.tiles[6][7])
-        this.tiles[7][6].piece = new Pawn(Player.White, this.tiles[7][6])
-        this.tiles[8][6].piece = new Pawn(Player.White, this.tiles[8][6])
-        this.tiles[9][6].piece = new Pawn(Player.White, this.tiles[9][6])
+        if (size == 11) {
+            // White
+            // Pawn
+            this.tiles[1][6].piece = new Pawn(Player.White, this.tiles[1][6])
+            this.tiles[2][6].piece = new Pawn(Player.White, this.tiles[2][6])
+            this.tiles[3][6].piece = new Pawn(Player.White, this.tiles[3][6])
+            this.tiles[4][7].piece = new Pawn(Player.White, this.tiles[4][7])
+            this.tiles[5][7].piece = new Pawn(Player.White, this.tiles[5][7])
+            this.tiles[6][7].piece = new Pawn(Player.White, this.tiles[6][7])
+            this.tiles[7][6].piece = new Pawn(Player.White, this.tiles[7][6])
+            this.tiles[8][6].piece = new Pawn(Player.White, this.tiles[8][6])
+            this.tiles[9][6].piece = new Pawn(Player.White, this.tiles[9][6])
 
-        // Rook
-        this.tiles[2][7].piece = new Rook(Player.White, this.tiles[2][7])
-        this.tiles[8][7].piece = new Rook(Player.White, this.tiles[8][7])
+            // Rook
+            this.tiles[2][7].piece = new Rook(Player.White, this.tiles[2][7])
+            this.tiles[8][7].piece = new Rook(Player.White, this.tiles[8][7])
 
-        // Knight
-        this.tiles[3][7].piece = new Knight(Player.White, this.tiles[3][7])
-        this.tiles[7][7].piece = new Knight(Player.White, this.tiles[7][7])
+            // Knight
+            this.tiles[3][7].piece = new Knight(Player.White, this.tiles[3][7])
+            this.tiles[7][7].piece = new Knight(Player.White, this.tiles[7][7])
 
-        // Bishop
-        this.tiles[4][8].piece = new Bishop(Player.White, this.tiles[4][8])
-        this.tiles[6][8].piece = new Bishop(Player.White, this.tiles[6][8])
+            // Bishop
+            this.tiles[4][8].piece = new Bishop(Player.White, this.tiles[4][8])
+            this.tiles[6][8].piece = new Bishop(Player.White, this.tiles[6][8])
 
-        // Queen
-        this.tiles[4][9].piece = new Queen(Player.White, this.tiles[4][9])
+            // Queen
+            this.tiles[4][9].piece = new Queen(Player.White, this.tiles[4][9])
 
-        // King
-        this.tiles[6][9].piece = new King(Player.White, this.tiles[6][9])
+            // King
+            this.tiles[6][9].piece = new King(Player.White, this.tiles[6][9])
 
-        // Black
-        // Pawn
-        this.tiles[1][0].piece = new Pawn(Player.Black, this.tiles[1][0])
-        this.tiles[2][1].piece = new Pawn(Player.Black, this.tiles[2][1])
-        this.tiles[3][2].piece = new Pawn(Player.Black, this.tiles[3][2])
-        this.tiles[4][2].piece = new Pawn(Player.Black, this.tiles[4][2])
-        this.tiles[5][3].piece = new Pawn(Player.Black, this.tiles[5][3])
-        this.tiles[6][2].piece = new Pawn(Player.Black, this.tiles[6][2])
-        this.tiles[7][2].piece = new Pawn(Player.Black, this.tiles[7][2])
-        this.tiles[8][1].piece = new Pawn(Player.Black, this.tiles[8][1])
-        this.tiles[9][0].piece = new Pawn(Player.Black, this.tiles[9][0])
+            // Black
+            // Pawn
+            this.tiles[1][0].piece = new Pawn(Player.Black, this.tiles[1][0])
+            this.tiles[2][1].piece = new Pawn(Player.Black, this.tiles[2][1])
+            this.tiles[3][2].piece = new Pawn(Player.Black, this.tiles[3][2])
+            this.tiles[4][2].piece = new Pawn(Player.Black, this.tiles[4][2])
+            this.tiles[5][3].piece = new Pawn(Player.Black, this.tiles[5][3])
+            this.tiles[6][2].piece = new Pawn(Player.Black, this.tiles[6][2])
+            this.tiles[7][2].piece = new Pawn(Player.Black, this.tiles[7][2])
+            this.tiles[8][1].piece = new Pawn(Player.Black, this.tiles[8][1])
+            this.tiles[9][0].piece = new Pawn(Player.Black, this.tiles[9][0])
 
-        // Rook
-        this.tiles[2][0].piece = new Rook(Player.Black, this.tiles[2][0])
-        this.tiles[8][0].piece = new Rook(Player.Black, this.tiles[8][0])
+            // Rook
+            this.tiles[2][0].piece = new Rook(Player.Black, this.tiles[2][0])
+            this.tiles[8][0].piece = new Rook(Player.Black, this.tiles[8][0])
 
-        // Knight
-        this.tiles[3][1].piece = new Knight(Player.Black, this.tiles[3][1])
-        this.tiles[7][1].piece = new Knight(Player.Black, this.tiles[7][1])
+            // Knight
+            this.tiles[3][1].piece = new Knight(Player.Black, this.tiles[3][1])
+            this.tiles[7][1].piece = new Knight(Player.Black, this.tiles[7][1])
 
-        // Bishop
-        this.tiles[4][1].piece = new Bishop(Player.Black, this.tiles[4][1])
-        this.tiles[6][1].piece = new Bishop(Player.Black, this.tiles[6][1])
+            // Bishop
+            this.tiles[4][1].piece = new Bishop(Player.Black, this.tiles[4][1])
+            this.tiles[6][1].piece = new Bishop(Player.Black, this.tiles[6][1])
 
-        // Queen
-        this.tiles[4][0].piece = new Queen(Player.Black, this.tiles[4][0])
+            // Queen
+            this.tiles[4][0].piece = new Queen(Player.Black, this.tiles[4][0])
 
-        // King
-        this.tiles[6][0].piece = new King(Player.Black, this.tiles[6][0])
+            // King
+            this.tiles[6][0].piece = new King(Player.Black, this.tiles[6][0])
+        }
     }
 
     move(piece: Piece, to: Tile) {
@@ -161,7 +163,6 @@ export class Board {
             }
         }
         if (whiteKing == null || blackKing == null) {
-            console.log("No king found")
             return GameStatus.InProgress
         }
         if (whiteMoves.length == 0) {
@@ -206,7 +207,6 @@ export class Board {
             }
         }
         if (kingTile == null) {
-            console.log("No king found")
             return false
         }
         return otherPlayerMoves.includes(kingTile)
@@ -290,6 +290,17 @@ export class Board {
     isInsideAtCoord(position: [number, number]): boolean {
         let index = this.coordToIndex(position)
         return this.isInside(index[0], index[1])
+    }
+
+    clear() {
+        for (let i = 0; i < this.size; i++) {
+            for (let j = 0; j < this.tiles[i].length; j++) {
+                let tile = this.tiles[i][j]
+                tile.piece = null
+                tile.targetAction = null
+                tile.gameStatus = null
+            }
+        }
     }
     
     deepCopy(): Board {

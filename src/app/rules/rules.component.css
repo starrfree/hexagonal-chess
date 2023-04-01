@@ -1,0 +1,56 @@
+/* modern style */
+::ng-deep body {
+  margin: 40px;
+}
+
+h1 {
+    color: rgb(110, 148, 104);
+}
+
+h2 {
+    color: rgb(90, 116, 86);
+    font-size: 29px;
+}
+
+h3 {
+    color: rgb(70, 84, 68);
+    font-size: 23px;
+}
+
+b {
+    color: rgb(70, 84, 68);
+}
+
+.board-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
+    margin-bottom: 50px;
+}
+
+.button {
+    width: 40px;
+    height: 40px;
+    background-color: rgb(246, 255, 244);
+    border: 2px solid rgba(164, 202, 159);
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease-in-out;
+    user-select: none;
+    /* center elements in div */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button:hover {
+    transform: scale(1.1);
+}
+
+.button img {
+    width: 25px;
+}

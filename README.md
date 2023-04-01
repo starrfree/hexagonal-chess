@@ -1,1 +1,1 @@
-# Hexagonal Chess
+# Chex: hexagonal chess

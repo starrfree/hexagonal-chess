@@ -1,0 +1,74 @@
+<!-- <a routerLink="/" class="button">
+    <img src="../assets/images/svg/arrow.left.svg" alt="back">
+</a> -->
+<h1>
+    Chex rules
+</h1>
+<p>
+    <b>Chex</b> is a variant of chess played on a hexagonal board. The rules are the same as in normal chess, except for the movement of the pieces.
+</p>
+<h2>
+    Piece movement
+</h2>
+<h3>
+    King
+</h3>
+<p>
+    The <b>king</b> can move one hexagon in any direction.<br>
+    The <b>king</b> are blocked by other pieces.
+</p>
+<div class="board-container">
+    <app-board #kingBoard [size]="7" [freeGame]="true"></app-board>
+</div>
+<h3>
+    Queen
+</h3>
+<p>
+    The <b>queen</b> can move any number of hexagons in any direction.<br>
+    The <b>queen</b> are blocked by other pieces.
+</p>
+<div class="board-container">
+    <app-board #queenBoard [size]="7" [freeGame]="true"></app-board>
+</div>
+<h3>
+    Rook
+</h3>
+<p>
+    <b>Rooks</b> can move any number of hexagons vertically or maximimally two hexagons in any other direction.<br>
+    <b>Rooks</b> are blocked by other pieces.
+</p>
+<div class="board-container">
+    <app-board #rookBoard [size]="7" [freeGame]="true"></app-board>
+</div>
+<h3>
+    Bishop
+</h3>
+<p>
+    <b>Bishops</b> can move one hexagon in any direction or two hexagons not in a straight line.<br>
+    <b>Bishops</b> are blocked by other pieces.
+</p>
+<div class="board-container">
+    <app-board #bishopBoard [size]="7" [freeGame]="true"></app-board>
+</div>
+<h3>
+    Knight
+</h3>
+<p>
+    <b>Knights</b> can move two hexagons in any direction and then one hexagon with an angle of 60°.<br>
+    <b>Knights</b> can jump over other pieces.
+</p>
+<div class="board-container">
+    <app-board #knightBoard [size]="7" [freeGame]="true"></app-board>
+</div>
+<h3>
+    Pawn
+</h3>
+<p>
+    <b>Pawns</b> can move one hexagon directly forward, never backward or to the side. <b>Pawns</b> that are further back may advance two hexagons the first time they move.
+    <b>Pawns</b> can capture one hexagon diagonally forward.<br>
+    When <b>pawns</b> reach the other side of the board, they are promoted to a <b>queen</b>.<br>
+    <b>Pawns</b> are blocked by other pieces.
+</p>
+<div class="board-container">
+    <app-board #pawnBoard [size]="7" [freeGame]="true"></app-board>
+</div>

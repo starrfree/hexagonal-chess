@@ -7,13 +7,16 @@ import { Board, Piece, Player, Tile } from '../class/chess';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  board: Board = new Board()
+  @Input() size: number = 11
+  @Input() freeGame: boolean = false
+   board!: Board
   activeTile: Tile | null = null
   hexagonSize: number = 100
 
   constructor() { }
 
   ngOnInit(): void {
+    this.board = new Board(this.size)
     let setSize = () => {
       this.hexagonSize = Math.min(window.innerWidth / 9, window.innerHeight / 10)
     }
@@ -31,12 +34,11 @@ export class BoardComponent implements OnInit {
   clickTile(tile: Tile) {
     if (this.activeTile == null) {
       if (tile.piece != null) {
-        this.activeTile = tile
-        this.board.highlightMoves(tile)
+        this.activateTile(tile)
       }
     } else {
       this.board.highlightMoves(this.activeTile)
-      if ((tile.targetAction == 'move' || tile.targetAction == 'attack') && this.activeTile.piece!.player == this.board.currentPlayer) {
+      if ((tile.targetAction == 'move' || tile.targetAction == 'attack') && (this.activeTile.piece!.player == this.board.currentPlayer || this.freeGame)) {
         this.board.move(this.activeTile.piece!, tile)
         this.activeTile = null
       } else {
@@ -49,6 +51,11 @@ export class BoardComponent implements OnInit {
         }
       }
     }
+  }
+
+  activateTile(tile: Tile) {
+    this.activeTile = tile
+    this.board.highlightMoves(tile)
   }
 
   pieceX(piece: Piece) {

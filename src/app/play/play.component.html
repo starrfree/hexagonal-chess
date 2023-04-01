@@ -1,4 +1,7 @@
 <div class="board-container">
+    <h1 class="title">
+        Chex
+    </h1>
     <app-board #board></app-board>
     <div class="player-indicator-container">
         <div class="player-indicator" [style.background-color]="playerColor"></div>
@@ -8,9 +11,9 @@
             <img src="../assets/images/svg/list.bullet.svg" alt="menu">
         </div>
         <div class="items-container" *ngIf="showMenu">
-            <div class="menu-item show">
+            <a class="menu-item show" routerLink="/rules" target="_blank">
                 <img src="../assets/images/svg/book.closed.svg" class="smaller" alt="rules">
-            </div>
+            </a>
             <div class="menu-item show" (click)="restart()">
                 <img *ngIf="!confirmingRestart" src="../assets/images/svg/arrow.triangle.2.circlepath.svg" alt="restart">
                 <img *ngIf="confirmingRestart" class="smaller" src="../assets/images/svg/checkmark.svg" alt="restart">
