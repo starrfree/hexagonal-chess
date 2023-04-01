@@ -64,4 +64,9 @@ export class BoardComponent implements OnInit {
     this.board = new Board()
     this.activeTile = null
   }
+
+  public undo() {
+    this.board.undo()
+    this.activeTile = null
+  }
 }

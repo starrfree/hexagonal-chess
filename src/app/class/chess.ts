@@ -4,6 +4,8 @@ export class Board {
     size: number
     tiles: Tile[][]
     currentPlayer: Player = Player.White
+    history: {piece: Piece, to: Tile, capturedPiece: Piece | null, promotedPiece: boolean}[] = []
+    lastMove: [Tile, Tile] | null = null
 
     constructor(size: number = 11) {
         this.size = size
@@ -84,18 +86,53 @@ export class Board {
     }
 
     move(piece: Piece, to: Tile) {
+        let originalPiece = piece.deepCopy(piece.tile)
         let from = piece.tile
         from.piece = null
+        let capturedPiece = to.piece?.deepCopy(to) ?? null
         to.piece = piece
         piece.tile = to
+        let promotedPiece = false
         if (piece instanceof Pawn) {
             piece.hasMoved = true
+            if (to.position.y == 0 && piece.player == Player.White) {
+                to.piece = new Queen(piece.player, to)
+                promotedPiece = true
+            }
+            if (to.position.y == this.tiles[to.position.x].length-1 && piece.player == Player.Black) {
+                to.piece = new Queen(piece.player, to)
+                promotedPiece = true
+            }
         }
         this.clearHighlighted()
         this.clearLastMove()
         to.isLastMove = true
         from.isLastMove = true
         this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White
+        this.history.push(
+            {
+                piece: originalPiece,
+                to: to,
+                capturedPiece: capturedPiece,
+                promotedPiece: promotedPiece,
+            }
+        )
+    }
+
+    undo() {
+        let lastMove = this.history.pop()
+        if (lastMove) {
+            lastMove.to.piece = lastMove.capturedPiece
+            if (lastMove.promotedPiece) {
+                lastMove.piece.tile.piece = new Pawn(lastMove.piece.player, lastMove.piece.tile)
+            } else {
+                lastMove.piece.tile.piece = lastMove.piece
+            }
+            lastMove.to.isLastMove = false
+            lastMove.piece.tile.isLastMove = false
+            this.currentPlayer = this.currentPlayer == Player.White ? Player.Black : Player.White
+            this.clearHighlighted()
+        }
     }
 
     gameStatus(): GameStatus {
@@ -129,15 +166,23 @@ export class Board {
         }
         if (whiteMoves.length == 0) {
             if (blackMoves.includes(whiteKing.tile)) {
+                whiteKing.tile.gameStatus = GameStatus.BlackWon
+                blackKing.tile.gameStatus = GameStatus.BlackWon
                 return GameStatus.BlackWon
             } else {
+                whiteKing.tile.gameStatus = GameStatus.Draw
+                blackKing.tile.gameStatus = GameStatus.Draw
                 return GameStatus.Draw
             }
         }
         if (blackMoves.length == 0) {
             if (whiteMoves.includes(blackKing.tile)) {
+                whiteKing.tile.gameStatus = GameStatus.WhiteWon
+                blackKing.tile.gameStatus = GameStatus.WhiteWon
                 return GameStatus.WhiteWon
             } else {
+                whiteKing.tile.gameStatus = GameStatus.Draw
+                blackKing.tile.gameStatus = GameStatus.Draw
                 return GameStatus.Draw
             }
         }
@@ -192,6 +237,7 @@ export class Board {
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.tiles[i].length; j++) {
                 this.tiles[i][j].targetAction = null
+                this.tiles[i][j].gameStatus = null
             }
         }
     }
@@ -252,32 +298,7 @@ export class Board {
             for (let j = 0; j < this.tiles[i].length; j++) {
                 let tile = this.tiles[i][j]
                 if (!tile.isEmpty) {
-                    let newPiece: Piece
-                    let newPlayer = tile.piece!.player
-                    switch(tile.piece!.constructor) {
-                        case Pawn:
-                            newPiece = new Pawn(newPlayer, newBoard.tiles[i][j])
-                            break
-                        case Rook:
-                            newPiece = new Rook(newPlayer, newBoard.tiles[i][j])
-                            break
-                        case Knight:
-                            newPiece = new Knight(newPlayer, newBoard.tiles[i][j])
-                            break
-                        case Bishop:
-                            newPiece = new Bishop(newPlayer, newBoard.tiles[i][j])
-                            break
-                        case Queen:
-                            newPiece = new Queen(newPlayer, newBoard.tiles[i][j])
-                            break
-                        case King:
-                            newPiece = new King(newPlayer, newBoard.tiles[i][j])
-                            break
-                        default:
-                            throw new Error('Unknown piece type')
-                    }
-                    newPiece.hasMoved = tile.piece!.hasMoved
-                    newBoard.tiles[i][j].piece = newPiece
+                    newBoard.tiles[i][j].piece = tile.piece!.deepCopy(newBoard.tiles[i][j])
                 } else {
                     newBoard.tiles[i][j].piece = null
                 }
@@ -294,6 +315,7 @@ export class Tile {
     color: Color
     position: {x: number, y: number}
     targetAction: 'move' | 'attack' | null = null
+    gameStatus: GameStatus | null = null
     isLastMove: boolean = false
 
     get isEmpty(): boolean {
@@ -308,6 +330,18 @@ export class Tile {
     }
 
     hexColor(): string {
+        if (this.piece != null && (this.piece instanceof King)) {
+            let win = (this.piece?.player == Player.Black && this.gameStatus == GameStatus.BlackWon) || (this.piece?.player == Player.White && this.gameStatus == GameStatus.WhiteWon)
+            let lose = (this.piece?.player == Player.Black && this.gameStatus == GameStatus.WhiteWon) || (this.piece?.player == Player.White && this.gameStatus == GameStatus.BlackWon)
+            let draw = this.gameStatus == GameStatus.Draw
+            if (lose) {
+                return 'lightcoral'
+            } else if (win) {
+                return 'rgb(255, 255, 128)'
+            } else if (draw) {
+                return 'lightgray'
+            }
+        }
         if (this.isLastMove) {
             switch(this.color) {
                 case Color.White:
@@ -346,6 +380,34 @@ export class Piece {
 
     getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         return []
+    }
+
+    deepCopy(tile: Tile): Piece {
+        let newPiece: Piece
+        switch(this.constructor) {
+            case Pawn:
+                newPiece = new Pawn(this.player, tile)
+                break
+            case Rook:
+                newPiece = new Rook(this.player, tile)
+                break
+            case Knight:
+                newPiece = new Knight(this.player, tile)
+                break
+            case Bishop:
+                newPiece = new Bishop(this.player, tile)
+                break
+            case Queen:
+                newPiece = new Queen(this.player, tile)
+                break
+            case King:
+                newPiece = new King(this.player, tile)
+                break
+            default:
+                throw new Error('Unknown piece type')
+        }
+        newPiece.hasMoved = this.hasMoved
+        return newPiece
     }
 }
 

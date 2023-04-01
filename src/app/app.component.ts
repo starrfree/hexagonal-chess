@@ -1,4 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { BoardComponent } from './board/board.component';
+import { Player } from './class/chess';
 
 @Component({
   selector: 'app-root',
@@ -6,8 +8,13 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  @ViewChild('board') board!: ElementRef
+  @ViewChild('board') board!: any
   showMenu = false
+
+  get playerColor() {
+    if (this.board == null) return 'white'
+    return this.board.board.currentPlayer == Player.White ? 'white' : 'black'
+  }
 
   constructor() { }
 
@@ -22,5 +29,13 @@ export class AppComponent {
       menuItems[i].classList.toggle("show")
       menuItems[i].classList.toggle("hide")
     }
+  }
+
+  restart() {
+    this.board.restart()
+  }
+
+  undo() {
+    this.board.undo()
   }
 }
