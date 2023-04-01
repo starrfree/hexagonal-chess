@@ -59,11 +59,11 @@ export class BoardComponent implements OnInit {
   }
 
   pieceX(piece: Piece) {
-    return `${piece.positionOffset.x + 15}px`
+    return `${piece.positionOffset.x + 14}px`
   }
 
   pieceY(piece: Piece) {
-    return `${piece.positionOffset.y + 5}px`
+    return `${piece.positionOffset.y + 7}px`
   }
 
   public restart() {
