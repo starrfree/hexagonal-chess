@@ -5,7 +5,7 @@ export class Board {
     tiles: Tile[][]
     currentPlayer: Player = Player.White
     history: {piece: Piece, to: Tile, capturedPiece: Piece | null, promotedPiece: boolean}[] = []
-    lastMove: [Tile, Tile] | null = null
+    indexInHistory: number = -1
 
     constructor(size: number = 11) {
         this.size = size

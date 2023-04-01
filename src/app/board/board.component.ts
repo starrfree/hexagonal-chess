@@ -38,7 +38,6 @@ export class BoardComponent implements OnInit {
       this.board.highlightMoves(this.activeTile)
       if ((tile.targetAction == 'move' || tile.targetAction == 'attack') && this.activeTile.piece!.player == this.board.currentPlayer) {
         this.board.move(this.activeTile.piece!, tile)
-        console.log(this.board.gameStatus())
         this.activeTile = null
       } else {
         if (tile == this.activeTile || tile.piece == null) {

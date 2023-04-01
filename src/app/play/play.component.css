@@ -1,0 +1,124 @@
+.board-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
+}
+
+.menu-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    align-items: center;
+    width: 50px;
+    user-select: none;
+}
+
+.menu-button {
+    width: 43px;
+    height: 43px;
+    background-color: rgb(246, 255, 244);
+    border: 2px solid rgba(164, 202, 159);
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease-in-out;
+    user-select: none;
+    /* center elements in div */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-button:hover {
+    transform: scale(1.1);
+}
+
+.menu-button img {
+    width: 30px;
+}
+
+.menu-item {
+    width: 35px;
+    height: 35px;
+    background-color: rgb(246, 255, 244);
+    border: 2px solid rgba(164, 202, 159);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    /* center element in div */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-item:hover {
+    transform: scale(1.1);
+}
+
+.menu-item img {
+    width: 23px;
+}
+
+.smaller-img img {
+    width: 20px;
+}
+
+.show {
+    animation: fadeIn 0.2s ease-in-out forwards;
+    visibility: hidden;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.hide {
+    animation: fadeOut 0.2s ease-in-out forwards;
+}
+
+.player-indicator-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(164, 202, 159);
+    background-color: rgb(246, 255, 244);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.player-indicator {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    outline: 2px solid gray;
+}
+
+.smaller {
+    width: 20px !important;
+}
