@@ -10,10 +10,10 @@ h1 {
 
 .board-container {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
     width: fit-content;
+    height: 100vh;
     margin: auto;
 }
 
@@ -131,4 +131,22 @@ h1 {
 
 .smaller {
     width: 20px !important;
+}
+
+.links {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.link {
+    color: rgb(70, 84, 68);
+}
+
+.link a {
+    color: rgb(70, 84, 68);
+}
+
+.link a:hover {
+    color: rgb(133, 177, 127);
 }
