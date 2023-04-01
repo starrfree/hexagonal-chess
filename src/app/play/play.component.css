@@ -1,3 +1,5 @@
+
+
 h1 {
     color: rgb(110, 148, 104);
 }
@@ -9,12 +11,10 @@ h1 {
 }
 
 .board-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    height: 100vh;
-    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .menu-container {

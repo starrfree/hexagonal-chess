@@ -1,8 +1,10 @@
-<div class="board-container">
+<div class="container">
     <h1 class="title">
         Chex
     </h1>
-    <app-board #board></app-board>
+    <div class="board-container">
+        <app-board #board></app-board>
+    </div>
     <div class="player-indicator-container">
         <div class="player-indicator" [style.background-color]="playerColor"></div>
     </div>
