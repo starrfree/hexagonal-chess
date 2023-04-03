@@ -16,7 +16,13 @@ export class BoardComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.board = new Board(this.size)
+    if (this.size == 11) {
+      console.log('11')
+      // this.board = Board.fromFEN('6/p-5-P/r-p-4-P-R/1-n-p-3-P-N-1/q-b-p-4-P-B-Q/3-p-3-P-3/k-b-p-4-P-B-K/1-n-p-3-P-N-1/r-p-4-P-R/p-5-P/6 w')
+      this.board = Board.fromFEN('6/p-5-P/r-p-4-P-R/1-n-p-3-P-N-1/q-b-p-4-P-B-Q/11/k-b-2-p-2-P-B-K/1-n-p-3-P-N-1/r-p-4-P-R/p-5-P/6 w')
+    } else {
+      this.board = new Board(this.size)
+    }
     let setSize = () => {
       this.hexagonSize = Math.min(window.innerWidth / 9, window.innerHeight / 10)
     }
@@ -40,6 +46,7 @@ export class BoardComponent implements OnInit {
       this.board.highlightMoves(this.activeTile)
       if ((tile.targetAction == 'move' || tile.targetAction == 'attack') && (this.activeTile.piece!.player == this.board.currentPlayer || this.freeGame)) {
         this.board.move(this.activeTile.piece!, tile)
+        console.log(Board.toFEN(this.board))
         this.activeTile = null
       } else {
         if (tile == this.activeTile || tile.piece == null) {

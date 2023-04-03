@@ -318,6 +318,67 @@ export class Board {
         newBoard.currentPlayer = this.currentPlayer
         return newBoard
     }
+
+    // example: 6/p-5-P/r-p-4-P-R/1-n-p-3-P-N-1/q-b-p-4-P-B-Q/11/k-b-2-p-2-P-B-K/1-n-p-3-P-N-1/r-p-4-P-R/p-5-P/6 w
+    static toFEN(board: Board): string {
+        let fen = ''
+        for (let i = 0; i < board.size; i++) {
+            let empty = 0
+            let didAdd = false
+            for (let j = 0; j < board.tiles[i].length; j++) {
+                let tile = board.tiles[i][j]
+                if (tile.isEmpty) {
+                    empty++
+                } else {
+                    if (didAdd) {
+                        fen += '-'
+                    }
+                    if (empty > 0) {
+                        fen += `${empty}-`
+                        empty = 0
+                    }
+                    fen += tile.piece!.toFEN()
+                    didAdd = true
+                }
+            }
+            if (empty > 0) {
+                if (didAdd) {
+                    fen += '-'
+                }
+                fen += empty
+            }
+            if (i < board.size - 1) {
+                fen += '/'
+            }
+        }
+        fen += ' ' + (board.currentPlayer == Player.White ? 'w' : 'b')
+        return fen
+    }
+
+    static fromFEN(fen: string): Board {
+        let fenParts = fen.split(' ')
+        let player = fenParts[1] == 'w' ? Player.White : Player.Black
+        let board = new Board(fenParts[0].split('/').length)
+        board.clear()
+        board.currentPlayer = player
+        let rows = fenParts[0].split('/')
+        for (let i = 0; i < rows.length; i++) {
+            let row = rows[i]
+            let tiles = row.split('-')
+            let x = 0
+            for (let j = 0; j < tiles.length; j++) {
+                let tile = tiles[j]
+                if (isNaN(Number(tile))) {
+                    let piece = Piece.fromFEN(tile, board.tiles[i][x])
+                    board.tiles[i][x].piece = piece
+                    x++
+                } else {
+                    x += Number(tile)
+                }
+            }
+        }
+        return board
+    }
 }
 
 export class Tile {
@@ -420,6 +481,40 @@ export class Piece {
         newPiece.hasMoved = this.hasMoved
         return newPiece
     }
+
+    toFEN(): string {
+        return ''
+    }
+
+    static fromFEN(fen: string, tile: Tile): Piece {
+        let player = fen == fen.toUpperCase() ? Player.White : Player.Black
+        let s = fen.toLowerCase()
+        let type = s == 'p' ? PieceType.Pawn : s == 'r' ? PieceType.Rook : s == 'n' ? PieceType.Knight : s == 'b' ? PieceType.Bishop : s == 'q' ? PieceType.Queen : PieceType.King
+        let piece: Piece
+        switch(type) {
+            case PieceType.Pawn:
+                piece = new Pawn(player, tile)
+                break
+            case PieceType.Rook:
+                piece = new Rook(player, tile)
+                break
+            case PieceType.Knight:
+                piece = new Knight(player, tile)
+                break
+            case PieceType.Bishop:
+                piece = new Bishop(player, tile)
+                break
+            case PieceType.Queen:
+                piece = new Queen(player, tile)
+                break
+            case PieceType.King:
+                piece = new King(player, tile)
+                break
+            default:
+                throw new Error('Unknown piece type')
+        }
+        return piece
+    }
 }
 
 export class Pawn extends Piece {
@@ -477,6 +572,10 @@ export class Pawn extends Piece {
 
         return possibleMoves
     }
+
+    override toFEN(): string {
+        return this.player == Player.White ? 'P' : 'p'
+    }
 }
 
 export class Rook extends Piece {
@@ -529,6 +628,10 @@ export class Rook extends Piece {
         })
         return possibleMoves
     }
+
+    override toFEN(): string {
+        return this.player == Player.White ? 'R' : 'r'
+    }
 }
 
 export class Knight extends Piece {
@@ -574,6 +677,10 @@ export class Knight extends Piece {
             }
         })
         return possibleMoves
+    }
+
+    override toFEN(): string {
+        return this.player == Player.White ? 'N' : 'n'
     }
 }
 
@@ -633,6 +740,10 @@ export class Bishop extends Piece {
         })
         return possibleMoves
     }
+
+    override toFEN(): string {
+        return this.player == Player.White ? 'B' : 'b'
+    }
 }
 
 export class Queen extends Piece {
@@ -685,6 +796,10 @@ export class Queen extends Piece {
         })
         return possibleMoves
     }
+
+    override toFEN(): string {
+        return this.player == Player.White ? 'Q' : 'q'
+    }
 }
 
 export class King extends Piece {
@@ -724,6 +839,10 @@ export class King extends Piece {
             }
         })
         return possibleMoves
+    }
+
+    override toFEN(): string {
+        return this.player == Player.White ? 'K' : 'k'
     }
 }
 
