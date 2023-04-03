@@ -16,6 +16,8 @@ The FEN describes the state of the board as follows:
     - If a letter is followed by "m", it means that the piece has moved. This is used to indicate weather a pawn can advance two hexagons.
 - The end of the board description is marked with a "$" sign followed by a letter indicating which player is to move: "w" for White and "b" for Black.
 
-*Example:* the starting position is encoded by ``6_p-5-P_r-p-4-P-R_1-n-p-3-P-N-1_q-b-p-4-P-B-Q_3-p-3-P-3_k-b-p-4-P-B-K_1-n-p-3-P-N-1_r-p-4-P-R_p-5-P_6$w``
+*Examples:* 
+- the starting position is encoded by ``6_p-5-P_r-p-4-P-R_1-n-p-3-P-N-1_q-b-p-4-P-B-Q_3-p-3-P-3_k-b-p-4-P-B-K_1-n-p-3-P-N-1_r-p-4-P-R_p-5-P_6$w``
+- smaller board ``4_p-3-P_b-p-2-P-B_k-r-p-1-P-R-K_n-p-2-P-N_p-3-P_4$w``
 
 Use ``https://chex.starfree.app/?fen=[FEN]`` to start a game with a custom fen.

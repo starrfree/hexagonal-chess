@@ -69,6 +69,7 @@ export class PlayComponent implements OnInit {
   }
 
   onMove() {
+    this.board.board.gameStatus()
     this.save()
   }
 
