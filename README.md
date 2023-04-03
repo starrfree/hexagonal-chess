@@ -13,6 +13,7 @@ The FEN describes the state of the board as follows:
 - A row is itself divided into tiles. Tiles are separated by "-".
     - A set of one or more empty tile is denoted by the number of empty tiles.
     - A piece is identified by a single letter (pawn = "P/p", rook = "R/r", knight = "N/n", bishop = "B/b", queen = "Q/q" and king = "K/k"). Uppercase letters for White and lowercase for Black.
+    - If a letter is followed by "m", it means that the piece has moved. This is used to indicate weather a pawn can advance two hexagons.
 - The end of the board description is marked with a "$" sign followed by a letter indicating which player is to move: "w" for White and "b" for Black.
 
 *Example:* the starting position is encoded by ``6_p-5-P_r-p-4-P-R_1-n-p-3-P-N-1_q-b-p-4-P-B-Q_3-p-3-P-3_k-b-p-4-P-B-K_1-n-p-3-P-N-1_r-p-4-P-R_p-5-P_6$w``
