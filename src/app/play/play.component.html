@@ -3,7 +3,7 @@
         Chex
     </h1>
     <div class="board-container">
-        <app-board #board></app-board>
+        <app-board #board (move)="onMove()"></app-board>
     </div>
     <div class="player-indicator-container">
         <div class="player-indicator" [style.background-color]="playerColor"></div>
@@ -31,6 +31,14 @@
         </div>
         <div class="link">
             More apps on <a href="https://starfree.app">starfree.app</a>
+        </div>
+    </div>
+    <div class="copy">
+        <div *ngIf="copied" class="message">
+            Copied!
+        </div>
+        <div class="link">
+            Copy board <a (click)="copy()">URL</a>
         </div>
     </div>
 </div>

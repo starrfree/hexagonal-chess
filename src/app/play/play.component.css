@@ -137,6 +137,7 @@ h1 {
     position: absolute;
     bottom: 10px;
     left: 10px;
+    max-width: 50%;
 }
 
 .link {
@@ -145,8 +146,24 @@ h1 {
 
 .link a {
     color: rgb(70, 84, 68);
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .link a:hover {
     color: rgb(133, 177, 127);
+}
+
+.copy {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    text-align: right;
+    max-width: 50%;
+}
+
+.copy .message {
+    color: rgb(133, 177, 127);
+    font-size: small;
+    margin-bottom: 7px;
 }

@@ -36,9 +36,9 @@ export class RulesComponent implements OnInit {
       this.knightBoard.board.tiles[3][3].piece = new Knight(Player.White, this.knightBoard.board.tiles[3][3])
       this.knightBoard.activateTile(this.knightBoard.board.tiles[3][3])
 
-      this.pawnBoard.board.tiles[3][4].piece = new Pawn(Player.White, this.pawnBoard.board.tiles[3][4])
-      this.pawnBoard.board.tiles[2][4].piece = new Pawn(Player.White, this.pawnBoard.board.tiles[2][4])
-      this.pawnBoard.board.tiles[4][4].piece = new Pawn(Player.White, this.pawnBoard.board.tiles[4][4])
+      this.pawnBoard.board.tiles[3][5].piece = new Pawn(Player.White, this.pawnBoard.board.tiles[3][5])
+      this.pawnBoard.board.tiles[2][5].piece = new Pawn(Player.White, this.pawnBoard.board.tiles[2][5])
+      this.pawnBoard.board.tiles[4][5].piece = new Pawn(Player.White, this.pawnBoard.board.tiles[4][5])
       this.pawnBoard.activateTile(this.pawnBoard.board.tiles[3][4])
     }, 100)
   }

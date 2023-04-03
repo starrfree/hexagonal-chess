@@ -7,83 +7,32 @@ export class Board {
     history: {piece: Piece, to: Tile, capturedPiece: Piece | null, promotedPiece: boolean}[] = []
     indexInHistory: number = -1
 
-    constructor(size: number = 11) {
-        this.size = size
-        this.tiles = []
-        for (let i = 0; i < size; i++) {
-            this.tiles.push([])
-            var rowCount = size - Math.abs(i - (size - 1) / 2)
-            for (let j = 0; j < rowCount; j++) {
-                var color: Color
-                if (i <= (size - 1) / 2) {
-                    color = [Color.White, Color.Gray, Color.Black][(i + j) % 3]
-                } else {
-                    color = [Color.White, Color.Gray, Color.Black][(2*i + j - Math.floor(size / 2)) % 3]
-                }
-                var tile = new Tile(this, color, {x: i, y: j})
-                this.tiles[i].push(tile)
+    constructor(fen: string | null = '6_p-5-P_r-p-4-P-R_1-n-p-3-P-N-1_q-b-p-4-P-B-Q_3-p-3-P-3_k-b-p-4-P-B-K_1-n-p-3-P-N-1_r-p-4-P-R_p-5-P_6$w', size: number | null = null) {
+        if (fen != null) {
+            let board = Board.fromFEN(fen)
+            this.size = board.size
+            this.tiles = board.tiles
+            this.currentPlayer = board.currentPlayer
+        } else {
+            if (size == null) {
+                throw new Error('Either FEN or size must be provided')
             }
-        }
-        if (size == 11) {
-            // White
-            // Pawn
-            this.tiles[1][6].piece = new Pawn(Player.White, this.tiles[1][6])
-            this.tiles[2][6].piece = new Pawn(Player.White, this.tiles[2][6])
-            this.tiles[3][6].piece = new Pawn(Player.White, this.tiles[3][6])
-            this.tiles[4][7].piece = new Pawn(Player.White, this.tiles[4][7])
-            this.tiles[5][7].piece = new Pawn(Player.White, this.tiles[5][7])
-            this.tiles[6][7].piece = new Pawn(Player.White, this.tiles[6][7])
-            this.tiles[7][6].piece = new Pawn(Player.White, this.tiles[7][6])
-            this.tiles[8][6].piece = new Pawn(Player.White, this.tiles[8][6])
-            this.tiles[9][6].piece = new Pawn(Player.White, this.tiles[9][6])
-
-            // Rook
-            this.tiles[2][7].piece = new Rook(Player.White, this.tiles[2][7])
-            this.tiles[8][7].piece = new Rook(Player.White, this.tiles[8][7])
-
-            // Knight
-            this.tiles[3][7].piece = new Knight(Player.White, this.tiles[3][7])
-            this.tiles[7][7].piece = new Knight(Player.White, this.tiles[7][7])
-
-            // Bishop
-            this.tiles[4][8].piece = new Bishop(Player.White, this.tiles[4][8])
-            this.tiles[6][8].piece = new Bishop(Player.White, this.tiles[6][8])
-
-            // Queen
-            this.tiles[4][9].piece = new Queen(Player.White, this.tiles[4][9])
-
-            // King
-            this.tiles[6][9].piece = new King(Player.White, this.tiles[6][9])
-
-            // Black
-            // Pawn
-            this.tiles[1][0].piece = new Pawn(Player.Black, this.tiles[1][0])
-            this.tiles[2][1].piece = new Pawn(Player.Black, this.tiles[2][1])
-            this.tiles[3][2].piece = new Pawn(Player.Black, this.tiles[3][2])
-            this.tiles[4][2].piece = new Pawn(Player.Black, this.tiles[4][2])
-            this.tiles[5][3].piece = new Pawn(Player.Black, this.tiles[5][3])
-            this.tiles[6][2].piece = new Pawn(Player.Black, this.tiles[6][2])
-            this.tiles[7][2].piece = new Pawn(Player.Black, this.tiles[7][2])
-            this.tiles[8][1].piece = new Pawn(Player.Black, this.tiles[8][1])
-            this.tiles[9][0].piece = new Pawn(Player.Black, this.tiles[9][0])
-
-            // Rook
-            this.tiles[2][0].piece = new Rook(Player.Black, this.tiles[2][0])
-            this.tiles[8][0].piece = new Rook(Player.Black, this.tiles[8][0])
-
-            // Knight
-            this.tiles[3][1].piece = new Knight(Player.Black, this.tiles[3][1])
-            this.tiles[7][1].piece = new Knight(Player.Black, this.tiles[7][1])
-
-            // Bishop
-            this.tiles[4][1].piece = new Bishop(Player.Black, this.tiles[4][1])
-            this.tiles[6][1].piece = new Bishop(Player.Black, this.tiles[6][1])
-
-            // Queen
-            this.tiles[4][0].piece = new Queen(Player.Black, this.tiles[4][0])
-
-            // King
-            this.tiles[6][0].piece = new King(Player.Black, this.tiles[6][0])
+            this.size = size
+            this.tiles = []
+            for (let i = 0; i < size; i++) {
+                this.tiles.push([])
+                var rowCount = size - Math.abs(i - (size - 1) / 2)
+                for (let j = 0; j < rowCount; j++) {
+                    var color: Color
+                    if (i <= (size - 1) / 2) {
+                        color = [Color.White, Color.Gray, Color.Black][(i + j) % 3]
+                    } else {
+                        color = [Color.White, Color.Gray, Color.Black][(2*i + j - Math.floor(size / 2)) % 3]
+                    }
+                    var tile = new Tile(this, color, {x: i, y: j})
+                    this.tiles[i].push(tile)
+                }
+            }
         }
     }
 
@@ -304,22 +253,9 @@ export class Board {
     }
     
     deepCopy(): Board {
-        let newBoard = new Board(this.size)
-        for (let i = 0; i < this.size; i++) {
-            for (let j = 0; j < this.tiles[i].length; j++) {
-                let tile = this.tiles[i][j]
-                if (!tile.isEmpty) {
-                    newBoard.tiles[i][j].piece = tile.piece!.deepCopy(newBoard.tiles[i][j])
-                } else {
-                    newBoard.tiles[i][j].piece = null
-                }
-            }
-        }
-        newBoard.currentPlayer = this.currentPlayer
-        return newBoard
+        return Board.fromFEN(Board.toFEN(this))
     }
 
-    // example: 6/p-5-P/r-p-4-P-R/1-n-p-3-P-N-1/q-b-p-4-P-B-Q/11/k-b-2-p-2-P-B-K/1-n-p-3-P-N-1/r-p-4-P-R/p-5-P/6 w
     static toFEN(board: Board): string {
         let fen = ''
         for (let i = 0; i < board.size; i++) {
@@ -348,20 +284,19 @@ export class Board {
                 fen += empty
             }
             if (i < board.size - 1) {
-                fen += '/'
+                fen += '_'
             }
         }
-        fen += ' ' + (board.currentPlayer == Player.White ? 'w' : 'b')
+        fen += '$' + (board.currentPlayer == Player.White ? 'w' : 'b')
         return fen
     }
 
     static fromFEN(fen: string): Board {
-        let fenParts = fen.split(' ')
+        let fenParts = fen.split('$')
         let player = fenParts[1] == 'w' ? Player.White : Player.Black
-        let board = new Board(fenParts[0].split('/').length)
-        board.clear()
+        let board = new Board(null, fenParts[0].split('_').length)
         board.currentPlayer = player
-        let rows = fenParts[0].split('/')
+        let rows = fenParts[0].split('_')
         for (let i = 0; i < rows.length; i++) {
             let row = rows[i]
             let tiles = row.split('-')
@@ -487,8 +422,10 @@ export class Piece {
     }
 
     static fromFEN(fen: string, tile: Tile): Piece {
-        let player = fen == fen.toUpperCase() ? Player.White : Player.Black
-        let s = fen.toLowerCase()
+        let pieceString: string = fen[0]
+        let moveString: string = fen[1]
+        let player = pieceString == pieceString.toUpperCase() ? Player.White : Player.Black
+        let s = pieceString.toLowerCase()
         let type = s == 'p' ? PieceType.Pawn : s == 'r' ? PieceType.Rook : s == 'n' ? PieceType.Knight : s == 'b' ? PieceType.Bishop : s == 'q' ? PieceType.Queen : PieceType.King
         let piece: Piece
         switch(type) {
@@ -513,6 +450,7 @@ export class Piece {
             default:
                 throw new Error('Unknown piece type')
         }
+        piece.hasMoved = moveString == 'm'
         return piece
     }
 }
@@ -531,6 +469,19 @@ export class Pawn extends Piece {
         this.positionOffset = {x: 0, y: -3.5}
     }
 
+    twoTilesAllowed(): boolean {
+        if (this.hasMoved) {
+            return false
+        }
+        let direction = this.player == Player.White ? -1 : 1
+        switch(this.player) {
+            case Player.White:
+                return this.tile.position.y + 2 * direction >= this.tile.board.tiles[this.tile.position.x].length / 2
+            case Player.Black:
+                return this.tile.position.y + 2 * direction <= this.tile.board.tiles[this.tile.position.x].length / 2 - 1
+        }
+    }
+
     override getPossibleMoves(board: Board, checkCheck: Boolean = true): Tile[] {
         let possibleMoves: Tile[] = []
 
@@ -543,7 +494,7 @@ export class Pawn extends Piece {
         if (board.isEmptyAtCoord([x, y + direction])) {
             targetMoves.push([x, y + direction])
         }
-        if (!this.hasMoved && x != 3 && x != 5 && x != 7) {
+        if (this.twoTilesAllowed()) {//!this.hasMoved && x != 3 && x != 5 && x != 7
             targetMoves.push([x, y + 2 * direction])
         }
         if (this.player == Player.White) {
@@ -574,7 +525,8 @@ export class Pawn extends Piece {
     }
 
     override toFEN(): string {
-        return this.player == Player.White ? 'P' : 'p'
+        let moveString = this.hasMoved ? 'm' : ''
+        return (this.player == Player.White ? 'P' : 'p') + moveString
     }
 }
 

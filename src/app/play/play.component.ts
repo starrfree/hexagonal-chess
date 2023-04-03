@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Player } from '../class/chess';
+import { Board, Player } from '../class/chess';
 
 @Component({
   selector: 'app-play',
@@ -10,17 +10,36 @@ export class PlayComponent implements OnInit {
   @ViewChild('board') board!: any
   showMenu = false
   confirmingRestart = false
+  getPlayerBackgroundColor = () => {}
+  copied = false
 
   get playerColor() {
-    if (this.board == null) return 'white'
-    return this.board.board.currentPlayer == Player.White ? 'white' : 'black'
+    return this.getPlayerBackgroundColor()
   }
 
   constructor() { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
-  ngAfterViewInit(): void { }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      let fen: string | null
+      if (window.location.search) {
+        fen = window.location.search.split('=')[1]
+        window.history.replaceState({}, document.title, window.location.pathname)
+        localStorage.setItem('fen', fen)
+      } else {
+        fen = localStorage.getItem('fen')
+      }
+      if (fen != null) {
+        this.board.board = Board.fromFEN(fen)
+      }
+      this.getPlayerBackgroundColor = () => {
+        if (this.board == null) return 'white'
+        return this.board.board.currentPlayer == Player.White ? 'white' : 'black'
+      }
+    }, 0)
+  }
 
   toggleMenu() {
     this.showMenu = true
@@ -35,6 +54,7 @@ export class PlayComponent implements OnInit {
   restart() {
     if (this.confirmingRestart) {
       this.board.restart()
+      localStorage.removeItem('fen')
       this.toggleMenu()
       this.confirmingRestart = false
     } else {
@@ -45,5 +65,29 @@ export class PlayComponent implements OnInit {
 
   undo() {
     this.board.undo()
+  }
+
+  onMove() {
+    this.save()
+  }
+
+  save() {
+    let fen = Board.toFEN(this.board.board)
+    localStorage.setItem('fen', fen)
+  }
+
+  copy() {
+    let fen = Board.toFEN(this.board.board)
+    let url = `http://chex.starfree.app/?fen=${fen}`
+    // copy fen to clipboard
+    let copyElement = document.createElement('textarea')
+    copyElement.value = url
+    document.body.appendChild(copyElement)
+    copyElement.select()
+    navigator.clipboard.writeText(url)
+    document.body.removeChild(copyElement)
+    
+    this.copied = true
+    setTimeout(() => { this.copied = false }, 2000)
   }
 }

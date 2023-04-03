@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { Board, Piece, Player, Tile } from '../class/chess';
 
 @Component({
@@ -9,19 +9,18 @@ import { Board, Piece, Player, Tile } from '../class/chess';
 export class BoardComponent implements OnInit {
   @Input() size: number = 11
   @Input() freeGame: boolean = false
-   board!: Board
+  board!: Board
   activeTile: Tile | null = null
   hexagonSize: number = 100
+  @Output() move = new EventEmitter()
 
   constructor() { }
 
   ngOnInit(): void {
     if (this.size == 11) {
-      console.log('11')
-      // this.board = Board.fromFEN('6/p-5-P/r-p-4-P-R/1-n-p-3-P-N-1/q-b-p-4-P-B-Q/3-p-3-P-3/k-b-p-4-P-B-K/1-n-p-3-P-N-1/r-p-4-P-R/p-5-P/6 w')
-      this.board = Board.fromFEN('6/p-5-P/r-p-4-P-R/1-n-p-3-P-N-1/q-b-p-4-P-B-Q/11/k-b-2-p-2-P-B-K/1-n-p-3-P-N-1/r-p-4-P-R/p-5-P/6 w')
+      this.board = new Board()
     } else {
-      this.board = new Board(this.size)
+      this.board = new Board(null, this.size)
     }
     let setSize = () => {
       this.hexagonSize = Math.min(window.innerWidth / 9, window.innerHeight / 10)
@@ -46,7 +45,7 @@ export class BoardComponent implements OnInit {
       this.board.highlightMoves(this.activeTile)
       if ((tile.targetAction == 'move' || tile.targetAction == 'attack') && (this.activeTile.piece!.player == this.board.currentPlayer || this.freeGame)) {
         this.board.move(this.activeTile.piece!, tile)
-        console.log(Board.toFEN(this.board))
+        this.move.emit()
         this.activeTile = null
       } else {
         if (tile == this.activeTile || tile.piece == null) {
