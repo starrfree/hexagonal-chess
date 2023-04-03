@@ -33,6 +33,7 @@ export class PlayComponent implements OnInit {
       }
       if (fen != null) {
         this.board.board = Board.fromFEN(fen)
+        this.board.setHexSize()
       }
       this.getPlayerBackgroundColor = () => {
         if (this.board == null) return 'white'
@@ -79,7 +80,7 @@ export class PlayComponent implements OnInit {
   copy() {
     let fen = Board.toFEN(this.board.board)
     let url = `http://chex.starfree.app/?fen=${fen}`
-    // copy fen to clipboard
+
     let copyElement = document.createElement('textarea')
     copyElement.value = url
     document.body.appendChild(copyElement)

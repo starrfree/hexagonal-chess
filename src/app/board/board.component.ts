@@ -13,6 +13,7 @@ export class BoardComponent implements OnInit {
   activeTile: Tile | null = null
   hexagonSize: number = 100
   @Output() move = new EventEmitter()
+  setHexSize = () => {}
 
   constructor() { }
 
@@ -22,11 +23,11 @@ export class BoardComponent implements OnInit {
     } else {
       this.board = new Board(null, this.size)
     }
-    let setSize = () => {
-      this.hexagonSize = Math.min(window.innerWidth / 9, window.innerHeight / 10)
+    this.setHexSize = () => {
+      this.hexagonSize = Math.min(window.innerWidth / 9 * 11 / this.board.size, window.innerHeight / 10 * 11 / this.board.size)
     }
-    window.addEventListener('resize', () => {setSize()})
-    setSize()
+    window.addEventListener('resize', () => {this.setHexSize()})
+    this.setHexSize()
   }
 
   xOffset(tile: Tile): string {
